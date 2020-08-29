@@ -1,0 +1,21 @@
+{
+  "name": "BotTwo",
+  "version": "1.0.0",
+  "description": "This is Harold-Bot, the bot for the CoF Discord server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.2",
+    "discord.js": "^12.3.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "opus": "0.0.0",
+    "dotenv": "^8.2.0"
+  }
+}
