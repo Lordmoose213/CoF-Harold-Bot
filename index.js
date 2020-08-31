@@ -9,9 +9,6 @@ const { Permissions } = require('discord.js');
  DISCORD.JS VERSION 12 CODE
 */
 
-//Declare Global Variable
-global.Testvar = 10
-
 // This is your client. Some people call it `bot`, some people call it `self`, 
 // some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
 // this is what we're refering to. Your client.
@@ -77,7 +74,7 @@ client.on("message", async message => {
     if (command === "help") {
         const senduserID = message.author
         var today = new Date();
-        message.channel.send("You are viewing the documentation for Harold-bot. If you are reading this you presumable know that f! is how you shall adress me. \n    f!help displays this message, as I hope you know. \n    f!ping will display the ping information for my host server. \n    f!say (text) will force me to say whatever it is you just said, so be responsible. Oh, it also deletes the command. \n    f!hello will trigger me to be polite and respond. \n    f!thischannel will return the channel ID of the current channel. \n    f!hailabsolute will send an appropriate message into the #hail-firnando chat. \n    f!hail will send an appropriate message into the current chat and delete the command message. \n    f!id will return your user ID. \n    f!day will list current day. \n    f!join will cause me to join the voice channel you are in. \n    f!leave will cause me to leave my voice channel (you must be in a voice channel for this command to work). \n    f!hymn # will cause me to play the hymn with whatever number was specified. \n    f!hymnlist will list all available hymns. \n    f!mute will allow admins to mute a member. \n    f!unmute will allow admins to unmute a member. \n    f!whatis (number) (operator) (number) this command will cause me to add, subtract, multiply, or divide the two given numbers. \n That is all the functionality I have right now, but expect more in the future.");
+        message.channel.send("You are viewing the documentation for Harold-bot. If you are reading this you presumable know that f! is how you shall adress me. \n    f!help displays this message, as I hope you know. \n    f!ping will display the ping information for my host server. \n    f!say (text) will force me to say whatever it is you just said, so be responsible. Oh, it also deletes the command. \n    f!hello will trigger me to be polite and respond. \n    f!thischannel will return the channel ID of the current channel. \n    f!hailabsolute will send an appropriate message into the #hail-firnando chat. \n    f!hail will send an appropriate message into the current chat and delete the command message. \n    f!id will return your user ID. \n    f!day will list current day. \n    f!join will cause me to join the voice channel you are in. \n    f!leave will cause me to leave my voice channel (you must be in a voice channel for this command to work). \n    f!hymn # will cause me to play the hymn with whatever number was specified. \n    f!hymnlist will list all available hymns. \n    f!mute will allow admins to mute a member. \n    f!unmute will allow admins to unmute a member. \n    f!whatis (number) (operator) (number) this command will cause me to add, subtract, multiply, or divide the two given numbers. \n    f!random (number) (number) will cause me to return a random number between those two numbers inclusivly. \nThat is all the functionality I have right now, but expect more in the future.");
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A help command was run by ' + senduserID);
     }
 
@@ -294,13 +291,24 @@ if (command === "leave") {
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A whatis command was run by " + senduserID)
     }
 
-    if (command === "varset") {
-        var Testvar = Number(args[0]);
+    if (command === "random") {
+        const senduserID = message.author
+        var today = new Date();
+        const min = Number(args[0])
+        const max = Number(args[1])
+        if (!min) {
+            message.channel.send("Please use the format (lowest number) (highest number) and I will return a number between those values inclusivly")
+            return
+        }
+        if (!max) {
+            message.channel.send("Please use the format (lowest number) (highest number) and I will return a number between those values inclusivly")
+            return
+        }
+        var random = Math.floor(Math.random() * (max + 1 - min)) + min;
+        message.channel.send("Your number is " + random)
+        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A random command was run by " + senduserID)
     }
 
-    if (command === "varread") {
-        message.channel.send("The variable is " + Testvar);
-    }
 
 /*
   if(command === "kick") {
