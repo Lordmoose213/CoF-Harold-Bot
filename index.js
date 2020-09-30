@@ -207,6 +207,10 @@ if (command === "leave") {
             const connection = await message.member.voice.channel.join();
             connection.play("FirnandoHymn2.mp3");
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " hymn number " + hymnnum + " was played by " + senduserID)
+        } else if (hymnnum == "3") {
+            const connection = await message.member.voice.channel.join();
+            connection.play("Alana's_Hymn.mp3");
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " hymn number " + hymnnum + " was played by " + senduserID)
         } else {
             message.channel.send('that is not a valid hymn');
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " invalid hymn number " + hymnnum + " was attempted to be played by " + senduserID);
@@ -216,7 +220,7 @@ if (command === "leave") {
     if (command === "hymnlist") {
         const senduserID = message.author
         var today = new Date();
-        message.channel.send("Here are your hymn options: \n    1. The Holy Church \n    2. Untitled");
+        message.channel.send("Here are your hymn options: \n    1. The Holy Church \n    2. Untitled \n    3. The Cleaved One's Prayer");
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A hymnlist command was run by " + senduserID);
     }
 
