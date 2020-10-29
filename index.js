@@ -136,6 +136,16 @@ client.on("message", async message => {
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A ThisChannel command was run by ' + senduserID);
     }
 
+    if (command === "thisserver") {
+        const serverNAME = message.guild.name
+        const serverID = message.guild.id
+        const senduserID = message.author
+        var today = new Date();
+        message.channel.send("This server, " + serverNAME + " has an ID of: " + serverID);
+        // log this in the console
+        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A ThisServer command was run by ' + senduserID);
+    }
+
     if (command === "hailabsolute") {
         const senduserID = message.author
         var today = new Date();
@@ -145,9 +155,15 @@ client.on("message", async message => {
 
     if (command === "hail") {
         const senduserID = message.author
+        var serverNAME = message.guild.name
+        var serverID = message.guild.id
         var today = new Date();
+        if (serverID === "642203556312776714") {
+            message.channel.send("HAIL FIRNANDO!");
+        } else if (serverID === "771122861460684870") {
+            message.channel.send("Hail Brittle!");
+        }
         message.delete().catch();
-        message.channel.send("HAIL FIRNANDO!");
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A Hail command was run by ' + senduserID);
     }
 
