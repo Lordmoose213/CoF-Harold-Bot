@@ -483,6 +483,13 @@ client.on("message", async message => {
             return
         }
 
+        //Appreciate
+        if (command === "appreciate") {
+            message.chanel.send("Why thank you for appreciating me, I shall now procede to submit my claim on your soul to the devil.")
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A appreciate command was run by " + senduserID);
+            return
+        }
+
         //Whatis Command
         if (command === "whatis") {
             const it1 = Number(args[0])
