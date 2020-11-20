@@ -5,6 +5,13 @@ const { OpusEncoder } = require('@discordjs/opus');
 const fs = require('fs');
 const { Permissions } = require('discord.js');
 
+//Load response files
+const response = require("./response_files/response.json");
+const emote = require("./response_files/emotes.json");
+const flirt = require("./response_files/flirtingresponses.json");
+const aflirt = require("./response_files/alanaflirtingresponses.json");
+const agreedisagree = require("./response_files/agreedisagree.json");
+
 /*
  DISCORD.JS VERSION 12 CODE
 */
@@ -45,7 +52,146 @@ client.on("guildMemberAdd", async User => {
     }
 });
 
+//Conversation Event listener
+client.on("message", async message => {
+    //This event will run on every message received.
 
+    //Grab Server ID
+    var serverNAME = message.guild.name
+    var serverID = message.guild.id
+
+    //Ignore messages in UUCC
+    if (serverID === "773618438135873558") return
+
+    //Ignore messages from bots
+    if (message.author.bot) return;
+
+    //Ignore messages with our prefix
+    if (message.content.startsWith(config.prefix)) return;
+
+    //Grab Message Author
+    var senduserID = message.author.id
+    
+    //Convert message into array
+    const words = message.content.trim().split(/ +/g);
+
+    //Convert array to lower case
+    const lcwords = words.join('|').toLowerCase().split('|');
+
+    /*
+     Guaranteed responses
+    */
+
+    //Flirting Responses
+    if (lcwords.includes("love") && lcwords.includes("harold")) {
+
+        //Check if its Alana
+        if (senduserID === "498335873637679117") {
+
+            //Decide what to say
+            r = Math.floor(Math.random() * 5)
+
+            //Say it
+            message.channel.send(aflirt[r])
+            return
+        }
+
+        //Otherwise still flirt with them
+
+        //Decide what to say
+        r = Math.floor(Math.random() * 3)
+
+        //Say it
+        message.channel.send(flirt[r])
+        return
+    }
+
+    //Good (Time of day) Responses
+    if (lcwords.includes("good")) {
+
+        //Check if they said good morning
+        if (lcwords.includes("morning")) {
+            //Repond
+            message.channel.send("Morning has indeed broken, like the first morning, and the Blood God has spoken, like the first day.")
+        }
+
+        //Check if they said good night
+        if (lcwords.includes("night")) {
+            //Respond
+            message.channel.send("Good night, do not let me kill you in your sleep, that would be...too easy")
+        }
+
+        //Check if they said good afternoon
+        if (lcwords.includes("afternoon")) {
+            //Respond
+            message.channel.send("Good afternoon to you too. Idiot.")
+        }
+
+        //Check if they said evening
+        if (lcwords.includes("evening")) {
+            //Respond
+            message.channel.send("Go to bed, you really need to sleep appropriately if you are to fear me")
+        }
+    }
+
+    /*
+     Reaction Reponses
+    */
+
+    //Decide whether to react to the message
+    var r = Math.floor(Math.random() * 12);
+    if (r === 6) {
+        //Decide what to react with
+        var r = Math.floor(Math.random() * (8));
+        if (r >= 6) {
+            var r = Math.floor(Math.random() * (7));
+            message.react(emote[r])
+            return
+        } else {
+            message.react('738061647683387432')
+            return
+        }
+    }
+
+    /*
+     Optional Responses
+    */
+
+    //Hello responses
+    if (lcwords.includes("hello")) {
+
+        //Decide whether to respond
+        var r = Math.floor(Math.random() * 5)
+        if (r === 4) {
+
+            //Decide what response to use
+            var r = Math.floor(Math.random() * 2)
+            //0, 1 are for hello response
+
+            //Actually response
+            message.channel.send(response[r])
+            return
+            }
+    }
+
+    //Agree/Disagree responses
+    if (lcwords.includes("yes") || lcwords.includes("no") || lcwords.includes("disagree") || lcwords.includes("agree")) {
+
+        //Decide whether to respond
+        var r = Math.floor(Math.random() * 5)
+        if (r === 4) {
+
+            //Decide which response to use
+            var r = Math.floor(Math.random() * 6)
+
+            //Send the response
+            message.channel.send(agreedisagree[r])
+        }
+    }
+
+});
+
+//Command Event Listener
 client.on("message", async message => {
     // This event will run on every single message received, from any channel or DM.
 
@@ -75,7 +221,8 @@ client.on("message", async message => {
 
             //CoF Help
             if (command === "help") {
-                message.channel.send("You are viewing the documentation for Harold-bot. If you are reading this you presumable know that f! is how you shall adress me. \n    f!help displays this message, as I hope you know. \n    f!ping will display the ping information for my host server. \n    f!say (text) will force me to say whatever it is you just said, so be responsible. Oh, it also deletes the command. \n    f!hello will trigger me to be polite and respond. \n    f!thischannel will return the channel ID of the current channel. \n    f!hailabsolute will send an appropriate message into the #hail-firnando chat. \n    f!hail will send an appropriate message into the current chat and delete the command message. \n    f!id will return your user ID. \n    f!day will list current day. \n    f!join will cause me to join the voice channel you are in. \n    f!leave will cause me to leave my voice channel (you must be in a voice channel for this command to work). \n    f!hymn # will cause me to play the hymn with whatever number was specified. \n    f!hymnlist will list all available hymns. \n    f!mute will allow admins to mute a member. \n    f!unmute will allow admins to unmute a member. \n    f!whatis (number) (operator) (number) this command will cause me to add, subtract, multiply, or divide the two given numbers. \n    f!random (number) (number) will cause me to return a random number between those two numbers inclusivly. \nThat is all the functionality I have right now, but expect more in the future.");
+                //Normal Help Command
+                message.channel.send("You are viewing the documentation for Harold-bot. If you are reading this you presumable know that f! is how you shall adress me. \n    f!help displays this message, as I hope you know. \n    f!ping will display the ping information for my host server. \n    f!say (text) will force me to say whatever it is you just said, so be responsible. Oh, it also deletes the command. \n    f!hello will trigger me to be polite and respond. \n    f!thischannel will return the channel ID of the current channel. \n    f!hailabsolute will send an appropriate message into the #hail-firnando chat. \n    f!hail will send an appropriate message into the current chat and delete the command message. \n    f!id will return your user ID. \n    f!day will list current day. \n    f!join will cause me to join the voice channel you are in. \n    f!leave will cause me to leave my voice channel (you must be in a voice channel for this command to work). \n    f!hymn # will cause me to play the hymn with whatever number was specified. \n    f!hymnlist will list all available hymns. \n    f!mute will allow admins to mute a member. \n    f!unmute will allow admins to unmute a member. \n    f!whatis (number) (operator) (number) this command will cause me to add, subtract, multiply, or divide the two given numbers. \n    f!random (number) (number) will cause me to return a random number between those two numbers inclusivly. \n    f!dice (number) will cause me to role a dice with that many sides, leaving the field empty will cause me to role a 6-sided dice \nThat is all the functionality I have right now, but expect more in the future.");
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A help command was run by ' + senduserID);
                 return
             }
@@ -196,7 +343,7 @@ client.on("message", async message => {
 
                 //Moderator Help Command
                 if (command === "help") {
-                    message.channel.send("You are viewing the moderator documentation for Harold-bot. \n Congragulations on expressing interesting in learning how to use me, Harold. \n I am here to help you moderate this server with ease and efficiency. Below I will list all of the commands only available to moderators of this server. \n These commands will allow you to do things such as vet users, mute users, and depending on your rank maybe even ban users. \n Since you are viewing this documentation I will assume that you have realized that you will adress my with f!. \n f!help displays this documentation as I am sure you know. \n f!vet (member) will give a member the 'member' role. \n f!mute (member) will mute a member until they are unmuted. \n f!unmute (member) will ummute a member. \n f!kick (member) (reason) will kick a member and alert the rest of the server as to the reason (you dont need one, i'll kicm 'em all the same). \n This documentation is incomplete, someone will probably update it in the future, but who really knows.");
+                    message.channel.send("You are viewing the moderator documentation for Harold-bot. \n Congragulations on expressing interesting in learning how to use me, Harold. \n I am here to help you moderate this server with ease and efficiency. Below I will list all of the commands only available to moderators of this server. \n These commands will allow you to do things such as vet users, mute users, and depending on your rank maybe even ban users. \n Since you are viewing this documentation I will assume that you have realized that you will adress my with f!. \n f!help displays this documentation as I am sure you know. \n f!vet (member) will give a member the 'member' role. \n f!mute (member) will mute a member until they are unmuted. \n f!unmute (member) will ummute a member. \n f!kick (member) (reason) will kick a member and alert the rest of the server as to the reason (you do not need one, i'll kick 'em all the same). \n This documentation is incomplete, someone will probably update it in the future, but who really knows.");
                     console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A help command was run by ' + senduserID);
                 }
                 //Vet Command
@@ -269,7 +416,7 @@ client.on("message", async message => {
 
                     // Now, time for a swift kick in the nuts!
                     await member.kick(reason)
-                        .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
+                        .catch(error => message.reply(`Sorry ${message.author} I could not kick because of : ${error}`));
                     message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
                     console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An kick command was run by " + senduserID + " against " + member)
                     return
@@ -297,7 +444,7 @@ client.on("message", async message => {
 
                     // Now, time for a swift kick in the nuts!
                     await member.ban()
-                        .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+                        .catch(error => message.reply(`Sorry ${message.author} I could not ban because of : ${error}`));
                     message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
                     console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An ban command was run by " + senduserID + " against " + member)
                     return
@@ -353,37 +500,37 @@ client.on("message", async message => {
             //Vet Return Command
             if (command === "vet") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A vet command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Mute Return Command
             if (command === "mute") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A mute command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Unmute Return Command
             if (command === "unmute") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An unmute command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Kick Return Command
             if (command === "kick") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A kick command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Roleadd Return Command
             if (command === "roleadd") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roleadd command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Roletake
             if (command === "roletake") {
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roletake command was illegally run by " + senduserID);
-                return message.reply("Sorry, you don't have permissions to use this!");
+                return message.reply("Sorry, you do not have permissions to use this!");
             }
 
             //Non Moderator Commands
@@ -406,7 +553,7 @@ client.on("message", async message => {
         if (command === "hello") {
             message.channel.send("hello! nice to meet you");
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A hello command was run by ' + senduserID);
-            setTimeout(function () { message.channel.send("although I dont really know why you are talking to a bot tbh"); }, 2000);
+            setTimeout(function () { message.channel.send("although I do not really know why you are talking to a bot tbh"); }, 2000);
             return
         }
 
@@ -485,7 +632,7 @@ client.on("message", async message => {
 
         //Appreciate
         if (command === "appreciate") {
-            message.chanel.send("Why thank you for appreciating me, I shall now procede to submit my claim on your soul to the devil.")
+            message.channel.send("Why thank you for appreciating me, I shall now procede to submit my claim on your soul to the devil.")
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A appreciate command was run by " + senduserID);
             return
         }
@@ -528,6 +675,21 @@ client.on("message", async message => {
             var random = Math.floor(Math.random() * (max + 1 - min)) + min;
             message.channel.send("Your number is " + random)
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A random command was run by " + senduserID)
+            return
+        }
+
+        //Dice Command
+        if (command === "dice") {
+            const dice = Number(args[0])
+            if (!dice) {
+                var random = Math.floor(Math.random() * (6)) + 1;
+                message.channel.send("Rolling a six-sided dice I got " + random)
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A default dice command was run by " + senduserID)
+                return
+            }
+            var random = Math.floor(Math.random() * (dice)) + 1;
+            message.channel.send("Rolling a " + dice + "-sided die I got " + random);
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A dice command was run by " + senduserID)
             return
         }
     } 
