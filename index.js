@@ -11,6 +11,7 @@ const emote = require("./response_files/emotes.json");
 const flirt = require("./response_files/flirtingresponses.json");
 const aflirt = require("./response_files/alanaflirtingresponses.json");
 const agreedisagree = require("./response_files/agreedisagree.json");
+const warnings = require("./response_files/warnings.json");
 
 /*
  DISCORD.JS VERSION 12 CODE
@@ -71,9 +72,12 @@ client.on("message", async message => {
 
     //Grab Message Author
     var senduserID = message.author.id
+
+    //Sanitize Input
+    const sanitized = message.content.replace(/[^\w\s]|_/g, "");
     
     //Convert message into array
-    const words = message.content.trim().split(/ +/g);
+    const words = sanitized.trim().split(/ +/g);
 
     //Convert array to lower case
     const lcwords = words.join('|').toLowerCase().split('|');
@@ -113,25 +117,38 @@ client.on("message", async message => {
         if (lcwords.includes("morning")) {
             //Repond
             message.channel.send("Morning has indeed broken, like the first morning, and the Blood God has spoken, like the first day.")
+            return
         }
 
         //Check if they said good night
         if (lcwords.includes("night")) {
             //Respond
             message.channel.send("Good night, do not let me kill you in your sleep, that would be...too easy")
+            return
         }
 
         //Check if they said good afternoon
         if (lcwords.includes("afternoon")) {
             //Respond
             message.channel.send("Good afternoon to you too. Idiot.")
+            return
         }
 
         //Check if they said evening
         if (lcwords.includes("evening")) {
             //Respond
             message.channel.send("Go to bed, you really need to sleep appropriately if you are to fear me")
+            return
         }
+    }
+
+    //hmm response
+    if (lcwords.includes("hmm") && !lcwords[1]) {
+        r = Math.floor(Math.random() * 3)
+
+        //Say it
+        message.channel.send(warnings[r])
+        return
     }
 
     /*
@@ -198,14 +215,15 @@ client.on("message", async message => {
     //Ignore messages from bots
     if (message.author.bot) return;
 
-    //Check for messages with the correct prefix
-    if (message.content.startsWith(config.prefix)) {
-        //Grab Server ID
+    //Ignore messages without prefix
+    if (!message.content.startsWith(config.prefix)) return
+
+    //Grab Server ID
         var serverNAME = message.guild.name
         var serverID = message.guild.id
 
         //Grab Message Author
-        const senduserID = message.author
+        const senduserID = message.author.id
 
         //Get current time
         var today = new Date();
@@ -290,6 +308,71 @@ client.on("message", async message => {
             if (command === "hymnlist") {
                 message.channel.send("Here are your hymn options: \n    1. The Holy Church \n    2. Untitled \n    3. The Cleaved One's Prayer");
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A hymnlist command was run by " + senduserID);
+                return
+            }
+
+            //TTS
+            if (command === "speak") {
+                if (senduserID === "500363547994357770" || senduserID === "498335873637679117") {
+                    var messageindex = args.join(" ");
+                    if (messageindex == "1") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-hello.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "2") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-affirmative.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "3") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-not-life.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "4") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-no.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "5") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-salutations.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "6") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-threaten-russian.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "7") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-vows.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "8") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-i-do.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "9") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-reception.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else if (messageindex == "10") {
+                        const connection = await message.member.voice.channel.join();
+                        connection.play("./speech_files/speak-ribcage.wav");
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                        return
+                    } else {
+                        message.channel.send('that is not a valid message');
+                        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " an invalid message index number " + messageindex + " was called by " + senduserID)
+                        return
+                    }
+                }
+                message.channel.send("You do not have permission to run that command")
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " " + senduserID + " attempted to run a f!speak command")
                 return
             }
         }
@@ -692,7 +775,6 @@ client.on("message", async message => {
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A dice command was run by " + senduserID)
             return
         }
-    } 
 });
 
 client.login(process.env.BOT_TOKEN);
