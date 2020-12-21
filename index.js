@@ -61,8 +61,8 @@ client.on("message", async message => {
     var serverNAME = message.guild.name
     var serverID = message.guild.id
 
-    //Ignore messages in UUCC
-    if (serverID === "773618438135873558") return
+    //Ignore messages in servers without response modules
+    if ((serverID === 773618438135873558) || (serverID === 771122861460684870)) return
 
     //Ignore messages from bots
     if (message.author.bot) return;
@@ -219,19 +219,354 @@ client.on("message", async message => {
     if (!message.content.startsWith(config.prefix)) return
 
     //Grab Server ID
-        var serverNAME = message.guild.name
-        var serverID = message.guild.id
+    var serverNAME = message.guild.name
+    var serverID = message.guild.id
 
-        //Grab Message Author
-        const senduserID = message.author.id
+    //Grab Message Author
+    const senduserID = message.author.id
 
-        //Get current time
-        var today = new Date();
+    //Get current time
+    var today = new Date();
 
-        //Parse commands and arguments
-        const args = message.content.slice(2).trim().split(/ +/g);
-        const command = args.shift().toLowerCase();
+    //Parse commands and arguments
+    const args = message.content.slice(2).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
 
+    //Loop for Administrative Module
+    if (serverID === 773618438135873558) {
+
+        //Check for admin roles
+        if (message.member.roles.cache.some(r => ["Admin", "Moderator", "Super Moderator", "Staff"].includes(r.name))) {
+
+            //Moderator Help Command
+            if (command === "help") {
+                message.channel.send("You are viewing the moderator documentation for Harold-bot. \n Congragulations on expressing interesting in learning how to use me, Harold. \n I am here to help you moderate this server with ease and efficiency. Below I will list all of the commands only available to moderators of this server. \n These commands will allow you to do things such as vet users, mute users, and depending on your rank maybe even ban users. \n Since you are viewing this documentation I will assume that you have realized that you will adress my with f!. \n f!help displays this documentation as I am sure you know. \n f!vet (member) will give a member the 'member' role. \n f!mute (member) will mute a member until they are unmuted. \n f!unmute (member) will ummute a member. \n f!kick (member) (reason) will kick a member and alert the rest of the server as to the reason (you do not need one, i'll kick 'em all the same). \n This documentation is incomplete, someone will probably update it in the future, but who really knows.");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A help command was run by ' + senduserID);
+            }
+            //Vet Command
+            if (command === "vet") {
+                //check if a member was mentioned
+                let member = message.mentions.members.first();
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty vet command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+                //give them the role
+                var role = member.guild.roles.cache.find(role => role.name === "Member");
+                member.roles.add(role);
+                message.channel.send("Vetted them");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A vet command was run by " + senduserID + " against " + member)
+                return
+            }
+
+            //Mute Command
+            if (command === "mute") {
+                //check if a member was mentioned
+                let member = message.mentions.members.first();
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty mute command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+                //give them the role
+                var role = member.guild.roles.cache.find(role => role.name === "Muted");
+                member.roles.add(role);
+                message.channel.send("Muted them");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A mute command was run by " + senduserID + " against " + member)
+                return
+            }
+
+            //Unmute Command
+            if (command === "unmute") {
+                //check if a member was mentioned
+                let member = message.mentions.members.first();
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty unmute command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+                //give them the role
+                var role = member.guild.roles.cache.find(role => role.name === "Muted");
+                member.roles.remove(role);
+                message.channel.send("Unmuted them");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An unmute command was run by " + senduserID + " against " + member)
+                return
+            }
+
+            //Kick Command
+            if (command === "kick") {
+                //Check if a member was mentioned
+                let member = message.mentions.members.first() || message.guild.members.get(args[0]);
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty kick command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+                //Check if Harold can kick the member
+                if (!member.kickable) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A kick command was run against an invalid target by " + senduserID)
+                    return message.reply("I cannot kick this user! Do they have a higher role?");
+                }
+
+                //Parse Reason for kicking
+                let reason = args.slice(1).join(' ');
+                if (!reason) {
+                    reason = "No reason provided";
+                }
+
+                // Now, time for a swift kick in the nuts!
+                await member.kick(reason)
+                    .catch(error => message.reply(`Sorry ${message.author} I could not kick because of : ${error}`));
+                message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An kick command was run by " + senduserID + " against " + member)
+                return
+            }
+
+            //Ban Command
+            if (command === "ban") {
+                //Check if a member was mentioned
+                let member = message.mentions.members.first() || message.guild.members.get(args[0]);
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty ban command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+                //Check if Harold can kick the member
+                if (!member.bannable) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A ban command was run against an invalid target by " + senduserID)
+                    return message.reply("I cannot ban this user! Do they have a higher role?");
+                }
+
+                //Parse Reason for kicking
+                let reason = args.slice(1).join(' ');
+                if (!reason) {
+                    reason = "No reason provided";
+                }
+
+                // Now, time for a swift kick in the nuts!
+                await member.ban()
+                    .catch(error => message.reply(`Sorry ${message.author} I could not ban because of : ${error}`));
+                message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An ban command was run by " + senduserID + " against " + member)
+                return
+            }
+
+            //Roleadd Command
+            if (command === "roleadd") {
+                //check if a member was mentioned
+                let member = message.mentions.members.first();
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty roleadd command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+
+                //check if a role was mentioned
+                var role = member.guild.roles.cache.find(role => role.name === args.slice(1).join(" "));
+                if (!role) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty roleadd command was run by " + senduserID)
+                    return message.reply("Please give a valid role in this server");
+                }
+                //give them the role
+                member.roles.add(role);
+                message.channel.send("Gave it to them");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roleadd command was run by " + senduserID + " against " + member + "for role" + role)
+                return
+            }
+
+            //Roletake Command
+            if (command === "roletake") {
+                //check if a member was mentioned
+                let member = message.mentions.members.first();
+                if (!member) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty roletake command was run by " + senduserID)
+                    return message.reply("Please mention a valid member of this server");
+                }
+
+                //check if a role was mentioned
+                var role = member.guild.roles.cache.find(role => role.name === args.slice(1).join(" "));
+                if (!role) {
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty roletake command was run by " + senduserID)
+                    return message.reply("Please give a valid role in this server");
+                }
+                //give them the role
+                member.roles.remove(role);
+                message.channel.send("Took it from them");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roletake command was run by " + senduserID + " against " + member + "for role" + role)
+                return
+            }
+        }
+
+        //Return Value if Moderator Command Run by non-Moderator
+
+        //Vet Return Command
+        if (command === "vet") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A vet command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+
+        //Mute Return Command
+        if (command === "mute") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A mute command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+
+        //Unmute Return Command
+        if (command === "unmute") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An unmute command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+
+        //Kick Return Command
+        if (command === "kick") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A kick command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+
+        //Roleadd Return Command
+        if (command === "roleadd") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roleadd command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+
+        //Roletake
+        if (command === "roletake") {
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A roletake command was illegally run by " + senduserID);
+            return message.reply("Sorry, you do not have permissions to use this!");
+        }
+    }
+
+    //Loop for Firnando Module
+    if ((serverID === 642203556312776714) || (serverID === 771122861460684870)) {
+
+        //Say Command
+        if (command === "say") {
+            // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
+            // To get the "message" itself we join the `args` back into a string with spaces: 
+            const sayMessage = args.join(" ");
+            //check if there is content in the message to be said
+            if (!sayMessage) {
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " An empty f!say command was run by " + senduserID)
+                return message.channel.send("Please include a string after f!say for me to say")
+            }
+            // Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
+            message.delete().catch(O_o => { });
+            // And we get the bot to say the thing: 
+            message.channel.send(sayMessage);
+            // log this in the console
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' An f!say command was run by ' + senduserID);
+            return
+        }
+
+        //HailAbsolute Command
+        if (command === "hailabsolute") {
+            client.channels.cache.get('642204078100709406').send('Hail Firnando!');
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A HailAbsolute command was run by ' + senduserID);
+            return
+        }
+
+        //Hail Firnando Command
+        if (command === "hail") {
+            message.channel.send("HAIL FIRNANDO!");
+            message.delete().catch();
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A Hail command was run by ' + senduserID);
+            return
+        }
+
+        //Hymn Command
+        if (command === "hymn") {
+            var hymnnum = args.join(" ");
+            if (hymnnum == "1") {
+                const connection = await message.member.voice.channel.join();
+                connection.play("Mark's_Poem.mp3");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " hymn number " + hymnnum + " was played by " + senduserID)
+                return
+            } else if (hymnnum == "2") {
+                const connection = await message.member.voice.channel.join();
+                connection.play("FirnandoHymn2.mp3");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " hymn number " + hymnnum + " was played by " + senduserID)
+                return
+            } else if (hymnnum == "3") {
+                const connection = await message.member.voice.channel.join();
+                connection.play("Alana's_Hymn.mp3");
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " hymn number " + hymnnum + " was played by " + senduserID)
+                return
+            } else {
+                message.channel.send('that is not a valid hymn');
+                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " invalid hymn number " + hymnnum + " was attempted to be played by " + senduserID);
+                return
+            }
+        }
+
+        //Hymnlist Command
+        if (command === "hymnlist") {
+            message.channel.send("Here are your hymn options: \n    1. The Holy Church \n    2. Untitled \n    3. The Cleaved One's Prayer");
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A hymnlist command was run by " + senduserID);
+            return
+        }
+
+        //TTS
+        if (command === "speak") {
+            if (senduserID === "500363547994357770" || senduserID === "498335873637679117") {
+                var messageindex = args.join(" ");
+                if (messageindex == "1") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-hello.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "2") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-affirmative.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "3") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-not-life.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "4") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-no.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "5") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-salutations.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "6") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-threaten-russian.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "7") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-vows.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "8") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-i-do.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "9") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-reception.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else if (messageindex == "10") {
+                    const connection = await message.member.voice.channel.join();
+                    connection.play("./speech_files/speak-ribcage.wav");
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " message index number " + messageindex + " was played by " + senduserID)
+                    return
+                } else {
+                    message.channel.send('that is not a valid message');
+                    console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " an invalid message index number " + messageindex + " was called by " + senduserID)
+                    return
+                }
+            }
+            message.channel.send("You do not have permission to run that command")
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " " + senduserID + " attempted to run a f!speak command")
+            return
+        }
+    }
+
+    /*
         //Loop for Firnando exclusive commands
         if (serverID === "642203556312776714") {
 
@@ -376,7 +711,8 @@ client.on("message", async message => {
                 return
             }
         }
-
+*/
+    /*
         //Loop for Brittle exclusive commands
         if (serverID === "771122861460684870") {
 
@@ -417,7 +753,8 @@ client.on("message", async message => {
             }
 
         }
-
+        */
+  /*
         //Loop for UUCC exclusive commands
         if (serverID === "773618438135873558") {
 
@@ -621,7 +958,7 @@ client.on("message", async message => {
         }
 
         //General Commands
-
+        */
         //Ping Command
         if (command === "ping") {
             // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
@@ -659,6 +996,15 @@ client.on("message", async message => {
             return
         }
 
+    /*
+    //ModulesLoaded Command
+    if (command === "modulesloaded") {
+        message.channel.send("The currently loaded modules are Administrative: " + modules[server].admin + ", Response: " + modules[server].response + ", Firnando: " + modules[server].firnando);
+        // log this in the console
+        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' A ModulesLoaded command was run by ' + senduserID);
+        return
+    }
+    */
         //ID Command
         if (command === "id") {
             //this returns the user ID of the message author
