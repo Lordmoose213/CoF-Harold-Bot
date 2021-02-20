@@ -1,4 +1,4 @@
-To Update
+To Update Heroku
 	Edit Files
 	Open Command Prompt in Directory
 		$ git add .
@@ -31,3 +31,7 @@ To change bot token
 To interact with the orb
 	$ heroku run bash
 		will open bash prompt on linux orb running bot
+To Add GitHub to local repo
+	git remote add origin https://github.com/FontaineFuturistics/CoF-Harold-Bot.git
+To Updapte GitHub
+	Edit Files
