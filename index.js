@@ -579,6 +579,16 @@ client.on("message", async message => {
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A appreciate command was run by " + senduserID);
             return
         }
+
+        //Laminate Command
+        if (command === "laminate") {
+            message.channel.send("light wood laminate")
+            for (let i = 0; i < 10; i++) {
+                setTimeout(function () { message.channel.send("light wood laminate"); }, 2500);
+            }
+            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A laminate command was run by " + senduserID);
+            return
+        }
     }
 
         //General Commands
@@ -709,20 +719,97 @@ client.on("message", async message => {
             return
         }
 
-        //Dice Command
-        if (command === "dice") {
-            const dice = Number(args[0])
+        //Dice Command DEPRICATED
+    /*
+    if (command === "dice") {
+        // Get the number of sides of the dice
+        const dice = Number(args[0])
+        // Check if the user gave a number of sides for the dice
             if (!dice) {
                 var random = Math.floor(Math.random() * (6)) + 1;
                 message.channel.send("Rolling a six-sided dice I got " + random)
                 console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A default dice command was run by " + senduserID)
                 return
             }
-            var random = Math.floor(Math.random() * (dice)) + 1;
+            var random = Math.floor(Math.random() * (dice)) + 1; // Generate the random number
             message.channel.send("Rolling a " + dice + "-sided die I got " + random);
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A dice command was run by " + senduserID)
             return
+    }
+    */
+
+    // Dice Command
+    if (command === "dice") {
+        //Declare dtotal
+        var dtotal = 0;
+        //Get the argument
+        var argument = args[0];
+
+        // Fail out if no argument given
+        if (!argument) {
+            message.channel.send("Please specify the number of sides on the dice you would like to roll, as well as the number of dice and the modifier");
+            return
         }
+
+        //Determine the number of dice to roll
+        var dnum = argument.split("d");
+
+        //Parse dnum and initial rest of message as dside
+        if (!dnum[1]) {
+            var dside = dnum[0]
+            var dnum = 1
+        } else {
+            var dside = dnum[1]
+            var dnum = dnum[0]
+        }
+
+        //Correct dnum if it has no value
+        if (!dnum[0]) var dnum = 1;
+
+        //Determine sides of the dice if a modifier was given
+        var dside = dside.split("+");
+
+        //Parse dside
+        if (!dside[1]) {
+            var dside = dside[0].split("-"); //causes an error
+
+            if (!dside[1]) {
+                var dmod = 0
+                var dside = dside[0]
+            } else {
+                var dmod = -1 * dside[1]
+                var dside = dside [0]
+            }
+        } else {
+            var dmod = dside[1]
+            var dside = dside[0]
+        }
+
+        //Ensure that dnum is not too large
+        if (dnum > 1000) {
+            message.channel.send("I refuse")
+            return
+        }
+        //Save the number of dice roles to a separate variable
+        var dnumsave = dnum;
+        //Preform the dice roles
+        while (dnum > 0) {
+            var random = Math.floor(Math.random() * (dside)) + 1; // Generate the random number
+            var dtotal = dtotal + random; // Add the number to the total
+            var dnum = dnum - 1; // Decrease dnum by 1 
+        }
+
+        var dtotalINT = parseInt(dtotal, 10);
+        var dmodINT = parseInt(dmod, 10);
+        //Add the modifier
+        var dtotal = dtotalINT + dmodINT
+
+        //Print the output
+        message.channel.send("Rolling a " + dside + "-sided dice " + dnumsave + " times and then adding a modifier of " + dmod + ", I got " + dtotal);
+        console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A dice command was run by " + senduserID)
+        return
+        // message.channel.send("dnum[0]= " + dnum[0] + "\ndnum[1]= " + dnum[1] + "\ndside[0]= " + dside[0] + "\ndside[1]= " + dside[1] + "\ndmod=" + dmod + "\ndtotalINT= " + dtotalINT + "\ndmodINT= " + dmodINT); //Prints all important variables
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
