@@ -676,8 +676,6 @@ client.on("message", async message => {
             return
         }
 
-
-
         //Whatis Command
         if (command === "whatis") {
             const it1 = Number(args[0])
@@ -718,25 +716,6 @@ client.on("message", async message => {
             console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A random command was run by " + senduserID)
             return
         }
-
-        //Dice Command DEPRICATED
-    /*
-    if (command === "dice") {
-        // Get the number of sides of the dice
-        const dice = Number(args[0])
-        // Check if the user gave a number of sides for the dice
-            if (!dice) {
-                var random = Math.floor(Math.random() * (6)) + 1;
-                message.channel.send("Rolling a six-sided dice I got " + random)
-                console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A default dice command was run by " + senduserID)
-                return
-            }
-            var random = Math.floor(Math.random() * (dice)) + 1; // Generate the random number
-            message.channel.send("Rolling a " + dice + "-sided die I got " + random);
-            console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + " A dice command was run by " + senduserID)
-            return
-    }
-    */
 
     // Dice Command
     if (command === "dice") {
