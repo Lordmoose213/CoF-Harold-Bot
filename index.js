@@ -52,7 +52,7 @@ client.on("guildMemberAdd", async User => {
         console.log(today.getHours() + ":" + (today.getMinutes() < 10 ? '0' : '') + today.getMinutes() + ' Sent A Funny due to ' + User + ' joining');
     }
 });
-
+//yeahhhhh
 //Conversation Event listener
 client.on("message", async message => {
     //This event will run on every message received.
