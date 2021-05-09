@@ -60,9 +60,14 @@ client.on("message", async message => {
     //Grab Server ID
     var serverNAME = message.guild.name
     var serverID = message.guild.id
+    var channelID = message.channel.id
 
     //Ignore messages in servers without response modules
     if ((serverID == 773618438135873558) || (serverID == 771122861460684870)) return
+
+    //Ignore messages in #beef and venting in The Church of Firnando
+
+    if (channelID == 642206567411875845) return;
 
     //Ignore messages from bots
     if (message.author.bot) return;
